@@ -61,6 +61,12 @@
     dest: /etc/pki/ca-trust/source/anchors/cacert.pem
     remote_src: yes
 
+- name: download certificate authority for Amazon RDS
+  uri:
+    url: https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem
+    dest: /etc/pki/ca-trust/source/anchors/rds-combined-ca-bundle.pem
+    creates: /etc/pki/ca-trust/source/anchors/rds-combined-ca-bundle.pem
+
 - name: enable update-ca-trust function
   command: update-ca-trust enable
 
