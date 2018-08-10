@@ -29,6 +29,9 @@
   args:
     creates: /etc/pki/tls/private/serverkey.pem
 
+- name: set group as "ssl-cert" for enable SSL on Postgres
+  command: chown root:103 /etc/pki/tls/private/serverkey.pem
+
 - name: create certificate signing request
   command: 'openssl req -new -key /etc/pki/tls/private/serverkey.pem -out /etc/pki/tls/certs/servercert.csr -sha256 -subj "/C=JP/ST=Tokyo/L=Oyama Itabashi-ku/O=FutureYS/CN=*.{{ roles_common_domain_name }}"'
   args:
