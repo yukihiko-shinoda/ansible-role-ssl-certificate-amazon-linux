@@ -1,0 +1,23 @@
+---
+- name: create key for identify server
+  command: openssl genrsa -aes256 -passout pass:xxxx -out /etc/pki/tls/private/serverkey-passphrase.pem 2048
+  args:
+    creates: /etc/pki/tls/private/serverkey-passphrase.pem
+
+- name: remove passphrasefrom key for identify server
+  command: openssl rsa -in /etc/pki/tls/private/serverkey-passphrase.pem -passin pass:xxxx -out /etc/pki/tls/private/serverkey.pem
+  args:
+    creates: /etc/pki/tls/private/serverkey.pem
+
+- name: set group as "ssl-cert" for enable SSL on Postgres
+  file:
+    path: /etc/pki/tls/private/serverkey.pem
+    state: touch
+    owner: root
+    group: 103
+    mode: 0640
+
+- name: create certificate signing request
+  command: openssl req -new -key /etc/pki/tls/private/serverkey.pem -out /etc/pki/tls/certs/servercert.csr -sha256 -subj '/C=JP/ST=Tokyo/L=Oyama Itabashi-ku/O=FutureYS/CN=*.{{ roles_common_domain_name }}'
+  args:
+    creates: /etc/pki/tls/certs/servercert.csr

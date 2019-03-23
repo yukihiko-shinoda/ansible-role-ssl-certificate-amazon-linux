@@ -1,0 +1,36 @@
+---
+- name: create key for certificate authority
+  command: openssl genrsa -aes256 -passout pass:xxxx -out /etc/pki/CA/private/cakey-passphrase.pem 2048
+  args:
+    creates: /etc/pki/CA/private/cakey-passphrase.pem
+
+- name: remove passphrase from key for certificate authority
+  command: openssl rsa -in /etc/pki/CA/private/cakey-passphrase.pem -passin pass:xxxx -out /etc/pki/CA/private/cakey.pem
+  args:
+    creates: /etc/pki/CA/private/cakey.pem
+
+- name: create certificate signing request
+  command: openssl req -new -key /etc/pki/CA/private/cakey.pem -out /etc/pki/CA/cacert.csr -sha256 -subj '/C=JP/ST=Tokyo/L=Oyama Itabashi-ku/O=FutureYS/CN=self-sign.{{ roles_common_domain_name }}'
+  args:
+    creates: /etc/pki/CA/cacert.csr
+
+- name: certificate authority by myself
+  command: openssl x509 -in /etc/pki/CA/cacert.csr -days 36500 -req -signkey /etc/pki/CA/private/cakey.pem -out /etc/pki/CA/cacert.pem
+  args:
+    creates: /etc/pki/CA/cacert.pem
+
+- name: create index.txt to certificate authority
+  file:
+    path: /etc/pki/CA/index.txt
+    state: touch
+    owner: root
+    group: root
+    mode: 0600
+
+- name: set serial to certificate authority
+  template:
+    src: serial.j2
+    dest: /etc/pki/CA/serial
+    owner: root
+    group: root
+    mode: 0600
