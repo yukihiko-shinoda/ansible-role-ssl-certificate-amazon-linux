@@ -1,23 +1,22 @@
 ---
 - name: create key for identify server
-  command: openssl genrsa -aes256 -passout pass:xxxx -out /etc/pki/tls/private/serverkey-passphrase.pem 2048
-  args:
-    creates: /etc/pki/tls/private/serverkey-passphrase.pem
-
-- name: remove passphrasefrom key for identify server
-  command: openssl rsa -in /etc/pki/tls/private/serverkey-passphrase.pem -passin pass:xxxx -out /etc/pki/tls/private/serverkey.pem
-  args:
-    creates: /etc/pki/tls/private/serverkey.pem
+  include_tasks: create_key_without_passphrase.yml
+  vars:
+    path_key: '{{ path_file_secret_key_server }}'
 
 - name: set group as "ssl-cert" for enable SSL on Postgres
   file:
-    path: /etc/pki/tls/private/serverkey.pem
+    path: '{{ path_file_secret_key_server }}'
     state: touch
     owner: root
     group: 103
     mode: 0640
 
 - name: create certificate signing request
-  command: openssl req -new -key /etc/pki/tls/private/serverkey.pem -out /etc/pki/tls/certs/servercert.csr -sha256 -subj '/C=JP/ST=Tokyo/L=Oyama Itabashi-ku/O=FutureYS/CN=*.{{ roles_common_domain_name }}'
+  command: >
+    openssl req -new
+    -key {{ path_file_secret_key_server }}
+    -out {{ path_file_certificate_server_request }} -sha256 -subj
+    '/C={{ csr_country_name }}/ST={{ csr_state_or_province_name }}/L={{ csr_locality_name }}/O={{ csr_organization_name }}/CN=*.{{ roles_common_domain_name }}'
   args:
-    creates: /etc/pki/tls/certs/servercert.csr
+    creates: '{{ path_file_certificate_server_request }}'

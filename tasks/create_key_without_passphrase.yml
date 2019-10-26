@@ -1,0 +1,15 @@
+---
+- name: create key
+  command: openssl genrsa -aes256 -passout pass:xxxx -out /tmp/key-with-passphrase.pem 2048
+  args:
+    creates: /tmp/key-with-passphrase.pem
+
+- name: remove passphrase from key
+  command: openssl rsa -in /tmp/key-with-passphrase.pem -passin pass:xxxx -out {{ path_key }}
+  args:
+    creates: '{{ path_key }}'
+
+- name: remove key with passphrase
+  file:
+    path: /tmp/key-with-passphrase.pem
+    state: absent

@@ -1,0 +1,9 @@
+---
+# ↓ This is following default setting on /etc/pki/tls/openssl.cnf
+path_file_secret_key_certificate_authority: /etc/pki/CA/private/cakey.pem
+path_file_certificate_server_request_certificate_authority: /etc/pki/CA/cacert-{{ roles_common_domain_name }}.csr
+# ↓ Default setting on /etc/pki/tls/openssl.cnf is "/etc/pki/CA/cacert.pem"
+path_file_certificate_self: /etc/pki/CA/cacert-{{ roles_common_domain_name }}.pem
+path_file_secret_key_server: /etc/pki/tls/private/serverkey-{{ roles_common_domain_name }}.pem
+path_file_certificate_server_request: /etc/pki/tls/certs/servercert-{{ roles_common_domain_name }}.csr
+path_file_certificate_server: /etc/pki/tls/certs/servercert-{{ roles_common_domain_name }}.pem

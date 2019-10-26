@@ -1,8 +1,8 @@
 ---
 - name: copy into install directory
   copy:
-    src: /etc/pki/CA/cacert.pem
-    dest: /etc/pki/ca-trust/source/anchors/cacert.pem
+    src: '{{ path_file_certificate_self }}'
+    dest: /etc/pki/ca-trust/source/anchors/cacert-{{ roles_common_domain_name }}.pem
     remote_src: yes
 
 - name: download certificate authority for Amazon RDS

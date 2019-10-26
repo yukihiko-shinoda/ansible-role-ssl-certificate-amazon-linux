@@ -1,5 +1,0 @@
----
-- include_tasks: set_certificate_authority_service.yml
-- include_tasks: create_certificate_signing_request.yml
-- include_tasks: certificate_authority_for_identify_server.yml
-- include_tasks: install_ca_cert.yml

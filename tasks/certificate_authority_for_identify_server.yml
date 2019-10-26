@@ -7,6 +7,11 @@
     insertafter: \[\susr_cert\s\]
 
 - name: certificate authority for identify server
-  command: openssl ca -batch -in /etc/pki/tls/certs/servercert.csr -out /etc/pki/tls/certs/servercert.pem -days 36500
+  command: >
+    openssl ca -batch
+    -in {{ path_file_certificate_server_request }}
+    -cert {{ path_file_certificate_self }}
+    -out {{ path_file_certificate_server }}
+    -days 36500
   args:
-    creates: /etc/pki/tls/certs/servercert.pem
+    creates: '{{ path_file_certificate_server }}'
