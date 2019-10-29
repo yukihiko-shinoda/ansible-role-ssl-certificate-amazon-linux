@@ -56,10 +56,11 @@
     group: root
     mode: 0600
 
-- name: set serial to certificate authority
+- name: set serial to certificate authority if not exist
   template:
     src: serial.j2
     dest: /etc/pki/CA/serial
     owner: root
     group: root
     mode: 0600
+    force: no
