@@ -4,13 +4,14 @@
   vars:
     path_key: '{{ path_file_secret_key_server }}'
 
-- name: set group as "ssl-cert" for enable SSL on Postgres
+- name: set group as "ssl-cert" for enable SSL on Database application
   file:
     path: '{{ path_file_secret_key_server }}'
     state: touch
     owner: root
-    group: 103
+    group: '{{ 999 if ssl_certificate_use_mysql else 103 if ssl_certificate_use_postgre_sql else omit}}'
     mode: 0640
+  when: ssl_certificate_use_mysql or ssl_certificate_use_postgre_sql
 
 - name: create certificate signing request
   command: >

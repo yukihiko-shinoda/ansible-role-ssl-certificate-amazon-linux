@@ -9,3 +9,5 @@ csr_organization_name: Netscape Communications
 #csr_state_or_province_name: Tokyo
 #csr_locality_name: Chiyoda-ku
 #csr_organization_name: Netscape Communications Japan
+ssl_certificate_use_mysql: no
+ssl_certificate_use_postgre_sql: no
