@@ -1,5 +1,27 @@
 ---
+- name: Set SAN extension for subdomain only (default)
+  set_fact:
+    certificate_san_extension: "DNS:*.{{ roles_common_domain_name }}"
+  when: not support_root_domain | bool
+
+- name: Set SAN extension for both root and subdomain
+  set_fact:
+    certificate_san_extension: "DNS:{{ roles_common_domain_name }},DNS:*.{{ roles_common_domain_name }}"
+  when: support_root_domain | bool
+
+- name: Set CN based on support_root_domain
+  set_fact:
+    certificate_common_name: "{{ roles_common_domain_name if support_root_domain | bool else '*.' + roles_common_domain_name }}"
+
 - include_tasks: set_certificate_authority_service.yml
+
 - include_tasks: create_certificate_signing_request.yml
+  vars:
+    san_extension: "{{ certificate_san_extension }}"
+    common_name: "{{ certificate_common_name }}"
+
 - include_tasks: certificate_authority_for_identify_server.yml
+  vars:
+    san_extension: "{{ certificate_san_extension }}"
+
 - include_tasks: install_ca_cert.yml

@@ -3,7 +3,7 @@
   blockinfile:
     path: /etc/pki/tls/openssl.cnf
     block: |
-      subjectAltName=DNS:*.{{ roles_common_domain_name }}
+      subjectAltName={{ san_extension }}
     insertafter: \[\susr_cert\s\]
 
 - name: certificate authority for identify server

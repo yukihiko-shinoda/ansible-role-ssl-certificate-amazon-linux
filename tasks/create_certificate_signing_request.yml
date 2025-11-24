@@ -13,11 +13,15 @@
     mode: 0640
   when: ssl_certificate_use_mysql or ssl_certificate_use_postgre_sql
 
-- name: create certificate signing request
-  command: >
-    openssl req -new
-    -key {{ path_file_secret_key_server }}
-    -out {{ path_file_certificate_server_request }} -sha256 -subj
-    '/C={{ csr_country_name }}/ST={{ csr_state_or_province_name }}/L={{ csr_locality_name }}/O={{ csr_organization_name }}/CN=*.{{ roles_common_domain_name }}'
+- name: Create certificate signing request
+  command:
+    cmd: >
+      openssl req
+      -new
+      -sha256
+      -key {{ path_file_secret_key_server }}
+      -out {{ path_file_certificate_server_request }}
+      -subj '/C={{ csr_country_name }}/ST={{ csr_state_or_province_name }}/L={{ csr_locality_name }}/O={{ csr_organization_name }}/CN={{ common_name }}'
+      -addext 'subjectAltName={{ san_extension }}'
   args:
     creates: '{{ path_file_certificate_server_request }}'

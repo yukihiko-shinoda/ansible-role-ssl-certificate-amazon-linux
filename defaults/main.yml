@@ -11,3 +11,5 @@ csr_organization_name: Netscape Communications
 #csr_organization_name: Netscape Communications Japan
 ssl_certificate_use_mysql: no
 ssl_certificate_use_postgre_sql: no
+# Set to yes to include root domain in SAN
+support_root_domain: no
